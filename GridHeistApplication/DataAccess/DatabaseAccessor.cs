@@ -13,27 +13,39 @@ namespace GridHeistApplication.DataAccess
         //connection string
         private readonly string connectionString = "Server=SIYARA\\MSSQLSERVER01;Database=GridHeistDB;Integrated Security=True;";
 
-        public bool ValidateLogin(string username, string password)
+        public int ValidateLogin(string username, string password)
         {
-            
-            string passwordHash = password; // This is a placeholder for real hashing logic
+            int loginStatus = 0; // Default to invalid
 
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlCommand command = new SqlCommand("sp_ValidatePlayer", connection))
+                using (SqlCommand cmd = new SqlCommand("sp_ValidatePlayer", conn))
                 {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@PlayerName", username);
-                    command.Parameters.AddWithValue("@PasswordHash", passwordHash);
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PlayerName", username);
+                    cmd.Parameters.AddWithValue("@PasswordHash", password);
 
-                    connection.Open();
-                    int result = (int)command.ExecuteScalar();
+                    try
+                    {
+                        conn.Open();
+                        // ExecuteScalar grabs the single 'LoginStatus' value returned by our SELECT in SQL
+                        object result = cmd.ExecuteScalar();
 
-                    return (result == 1);
+                        if (result != null)
+                        {
+                            loginStatus = Convert.ToInt32(result);
+                        }
+                    }
+                    catch (SqlException ex)
+                    {
+
+                        throw new Exception("Database error during login: " + ex.Message);
+                    }
                 }
             }
-        }
 
+            return loginStatus;
+        }
 
 
         public string GetGameStatus(int gameId)

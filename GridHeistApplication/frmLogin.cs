@@ -23,21 +23,22 @@ namespace GridHeistApplication
             string username = txtUsername.Text;
             string password = txtPassword.Text;
 
-            // 1. Instantiate  DAO
             DatabaseAccessor dbAccessor = new DatabaseAccessor();
+            int status = dbAccessor.ValidateLogin(username, password);
 
-            // 2. Call the validation method
-            bool isValid = dbAccessor.ValidateLogin(username, password);
-
-            // 3. Act on the result
-            if (isValid)
+            if (status == 1) // Success
             {
                 MessageBox.Show("Login Successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
                 frmGame gameForm = new frmGame();
                 gameForm.Show();
                 this.Hide();
             }
-            else
+            else if (status == -1) // Locked Out
+            {
+                MessageBox.Show("Account locked due to too many failed attempts. Please contact an administrator.",
+                                "Account Locked", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
+            else // Invalid (status == 0)
             {
                 MessageBox.Show("Invalid username or password.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
