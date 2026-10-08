@@ -133,7 +133,31 @@ namespace GridHeistApplication.DataAccess
         }
 
 
-
+        //Update Existing Player
+        public int AdminUpdatePlayer(int targetPlayerId, string newUsername, string newPassword, bool unlockAccount, bool isAdmin)
+        {
+            int status = 0;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_AdminUpdatePlayer", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@TargetPlayerID", targetPlayerId);
+                    cmd.Parameters.AddWithValue("@NewPlayerName", newUsername);
+                    cmd.Parameters.AddWithValue("@ResetPasswordHash", newPassword); // Pass empty string if no change
+                    cmd.Parameters.AddWithValue("@UnlockAccount", unlockAccount);
+                    cmd.Parameters.AddWithValue("@IsAdmin", isAdmin);
+                    try
+                    {
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != null) status = Convert.ToInt32(result);
+                    }
+                    catch (SqlException ex) { throw new Exception("Database error: " + ex.Message); }
+                }
+            }
+            return status;
+        }
 
 
 

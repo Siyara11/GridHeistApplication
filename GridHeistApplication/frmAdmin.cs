@@ -105,14 +105,31 @@ namespace GridHeistApplication
 
         private void btnUpdateSelected_Click(object sender, EventArgs e)
         {
-            if (lstPlayers.SelectedIndex >= 0)
+            if (lstPlayers.SelectedIndex >= 0 && !string.IsNullOrEmpty(txtPlayerID.Text))
             {
-                // Update selected player logic
-                MessageBox.Show("Update Player functionality would go here.", "Update Player");
+                int playerId = Convert.ToInt32(txtPlayerID.Text);
+                string newUsername = txtUsername.Text.Trim();
+
+                bool unlockAccount = !chkAccountLocked.Checked;
+
+                DatabaseAccessor dbAccessor = new DatabaseAccessor();
+
+                // Passing an empty string for the password means we aren't changing it
+                int status = dbAccessor.AdminUpdatePlayer(playerId, newUsername, "", unlockAccount, false);
+
+                if (status == 1)
+                {
+                    MessageBox.Show("Player updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadPlayers();
+                }
+                else
+                {
+                    MessageBox.Show("Update failed. The new username may already be in use.", "Update Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
-                MessageBox.Show("Please select a player first.", "No Selection");
+                MessageBox.Show("Please select a player first.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
