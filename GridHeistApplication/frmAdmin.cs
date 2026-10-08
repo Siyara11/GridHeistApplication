@@ -59,10 +59,48 @@ namespace GridHeistApplication
             }
         }
 
+        //Admin add new player to the game 
         private void btnAddNewPlayer_Click(object sender, EventArgs e)
         {
-            // Add new player logic
-            MessageBox.Show("Add New Player functionality would go here.", "Add Player");
+            if (!string.IsNullOrEmpty(txtPlayerID.Text))
+            {
+                txtPlayerID.Text = "";
+                txtUsername.Text = "";
+                chkAccountLocked.Checked = false;
+
+                // Deselect whatever is highlighted in the list box
+                lstPlayers.ClearSelected();
+
+                MessageBox.Show("Form cleared and ready. Type the new username and click 'Add New Player' again to save.",
+                                "Ready for New Player", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                txtUsername.Focus();
+
+                return;
+            }
+
+            string username = txtUsername.Text.Trim();
+
+            if (string.IsNullOrEmpty(username))
+            {
+                MessageBox.Show("Please enter a username to add.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DatabaseAccessor dbAccessor = new DatabaseAccessor();
+            int status = dbAccessor.AdminAddPlayer(username, "Temp#123", false);
+
+            if (status == 1)
+            {
+                MessageBox.Show($"Player '{username}' added successfully with default password 'Temp#123'.",
+                                "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                LoadPlayers(); // Refresh the list so the new player appears
+            }
+            else
+            {
+                MessageBox.Show("That username is already taken.", "Add Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void btnUpdateSelected_Click(object sender, EventArgs e)
