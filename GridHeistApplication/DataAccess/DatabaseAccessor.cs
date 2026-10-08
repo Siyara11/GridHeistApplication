@@ -84,6 +84,82 @@ namespace GridHeistApplication.DataAccess
         }
 
 
+        //Admin Get ALll Payers
+        public DataTable GetAdminPlayerList()
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_AdminGetAllPlayers", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    try
+                    {
+                        conn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        da.Fill(dt);
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Database error fetching players: " + ex.Message);
+                    }
+                }
+            }
+            return dt;
+        }
+
+        //Admin add new player
+        public int AdminAddPlayer(string username, string password, bool isAdmin)
+        {
+            int status = 0;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_AdminAddPlayer", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PlayerName", username);
+                    cmd.Parameters.AddWithValue("@PasswordHash", password);
+                    cmd.Parameters.AddWithValue("@IsAdmin", isAdmin);
+                    try
+                    {
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != null) status = Convert.ToInt32(result);
+                    }
+                    catch (SqlException ex) { throw new Exception("Database error: " + ex.Message); }
+                }
+            }
+            return status;
+        }
+
+
+        //Update Existing Player
+        public int AdminUpdatePlayer(int targetPlayerId, string newUsername, string newPassword, bool unlockAccount, bool isAdmin)
+        {
+            int status = 0;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_AdminUpdatePlayer", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@TargetPlayerID", targetPlayerId);
+                    cmd.Parameters.AddWithValue("@NewPlayerName", newUsername);
+                    cmd.Parameters.AddWithValue("@ResetPasswordHash", newPassword); // Pass empty string if no change
+                    cmd.Parameters.AddWithValue("@UnlockAccount", unlockAccount);
+                    cmd.Parameters.AddWithValue("@IsAdmin", isAdmin);
+                    try
+                    {
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != null) status = Convert.ToInt32(result);
+                    }
+                    catch (SqlException ex) { throw new Exception("Database error: " + ex.Message); }
+                }
+            }
+            return status;
+        }
+
+
 
 
         public string GetGameStatus(int gameId)

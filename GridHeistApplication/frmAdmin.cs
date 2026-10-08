@@ -25,53 +25,111 @@ namespace GridHeistApplication
             DatabaseAccessor dbAccessor = new DatabaseAccessor();
             try
             {
-                // Clear any existing items in the list box
-                lstPlayers.Items.Clear();
+                // Fetch the table of players
+                DataTable dtPlayers = dbAccessor.GetAdminPlayerList();
 
-                // Get the list of player names from the database
-                List<string> playerNames = dbAccessor.GetAllPlayerNames();
+                lstPlayers.DataSource = dtPlayers;
+                lstPlayers.DisplayMember = "PlayerName";
+                lstPlayers.ValueMember = "PlayerID";
 
-                // Add each name from the list to the list box
-                foreach (string name in playerNames)
+                // Clear the text boxes if no players exist
+                if (dtPlayers.Rows.Count == 0)
                 {
-                    lstPlayers.Items.Add(name);
+                    txtPlayerID.Text = "";
+                    txtUsername.Text = "";
+                    chkAccountLocked.Checked = false;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Database error: " + ex.Message, "Error");
+                MessageBox.Show("Database error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void lstPlayers_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lstPlayers.SelectedIndex >= 0)
+            if (lstPlayers.SelectedIndex >= 0 && lstPlayers.SelectedItem is DataRowView)
             {
-                string selectedPlayer = lstPlayers.SelectedItem.ToString();
-                // Populate player details based on selection
-                // This would typically load data from the database
-                txtPlayerID.Text = ""; // Load from database
-                txtUsername.Text = selectedPlayer;
-                chkAccountLocked.Checked = false; // Load from database
+                DataRowView selectedRow = (DataRowView)lstPlayers.SelectedItem;
+
+                // Populate the UI text boxes using the bound database columns
+                txtPlayerID.Text = selectedRow["PlayerID"].ToString();
+                txtUsername.Text = selectedRow["PlayerName"].ToString();
+                chkAccountLocked.Checked = Convert.ToBoolean(selectedRow["IsLockedOut"]);
             }
         }
 
+        //Admin add new player to the game 
         private void btnAddNewPlayer_Click(object sender, EventArgs e)
         {
-            // Add new player logic
-            MessageBox.Show("Add New Player functionality would go here.", "Add Player");
+            if (!string.IsNullOrEmpty(txtPlayerID.Text))
+            {
+                txtPlayerID.Text = "";
+                txtUsername.Text = "";
+                chkAccountLocked.Checked = false;
+
+                // Deselect whatever is highlighted in the list box
+                lstPlayers.ClearSelected();
+
+                MessageBox.Show("Form cleared and ready. Type the new username and click 'Add New Player' again to save.",
+                                "Ready for New Player", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                txtUsername.Focus();
+
+                return;
+            }
+
+            string username = txtUsername.Text.Trim();
+
+            if (string.IsNullOrEmpty(username))
+            {
+                MessageBox.Show("Please enter a username to add.", "Validation Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            DatabaseAccessor dbAccessor = new DatabaseAccessor();
+            int status = dbAccessor.AdminAddPlayer(username, "Temp#123", false);
+
+            if (status == 1)
+            {
+                MessageBox.Show($"Player '{username}' added successfully with default password 'Temp#123'.",
+                                "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                LoadPlayers(); // Refresh the list so the new player appears
+            }
+            else
+            {
+                MessageBox.Show("That username is already taken.", "Add Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            }
         }
 
         private void btnUpdateSelected_Click(object sender, EventArgs e)
         {
-            if (lstPlayers.SelectedIndex >= 0)
+            if (lstPlayers.SelectedIndex >= 0 && !string.IsNullOrEmpty(txtPlayerID.Text))
             {
-                // Update selected player logic
-                MessageBox.Show("Update Player functionality would go here.", "Update Player");
+                int playerId = Convert.ToInt32(txtPlayerID.Text);
+                string newUsername = txtUsername.Text.Trim();
+
+                bool unlockAccount = !chkAccountLocked.Checked;
+
+                DatabaseAccessor dbAccessor = new DatabaseAccessor();
+
+                // Passing an empty string for the password means we aren't changing it
+                int status = dbAccessor.AdminUpdatePlayer(playerId, newUsername, "", unlockAccount, false);
+
+                if (status == 1)
+                {
+                    MessageBox.Show("Player updated successfully.", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    LoadPlayers();
+                }
+                else
+                {
+                    MessageBox.Show("Update failed. The new username may already be in use.", "Update Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
             }
             else
             {
-                MessageBox.Show("Please select a player first.", "No Selection");
+                MessageBox.Show("Please select a player first.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
