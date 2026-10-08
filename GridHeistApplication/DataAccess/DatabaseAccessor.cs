@@ -13,6 +13,8 @@ namespace GridHeistApplication.DataAccess
         //connection string
         private readonly string connectionString = "Server=SIYARA\\MSSQLSERVER01;Database=GridHeistDB;Integrated Security=True;";
 
+
+        //Validate login for user identification
         public int ValidateLogin(string username, string password)
         {
             int loginStatus = 0; // Default to invalid
@@ -46,6 +48,42 @@ namespace GridHeistApplication.DataAccess
 
             return loginStatus;
         }
+
+
+        //Register a new user in the database
+        public int RegisterPlayer(string username, string password)
+        {
+            int regStatus = 0; // Default to failure (0)
+
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_RegisterPlayer", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@PlayerName", username);
+                    cmd.Parameters.AddWithValue("@PasswordHash", password);
+
+                    try
+                    {
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+
+                        if (result != null)
+                        {
+                            regStatus = Convert.ToInt32(result);
+                        }
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Database error during registration: " + ex.Message);
+                    }
+                }
+            }
+
+            return regStatus;
+        }
+
+
 
 
         public string GetGameStatus(int gameId)
