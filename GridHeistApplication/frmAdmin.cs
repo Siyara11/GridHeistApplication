@@ -25,34 +25,37 @@ namespace GridHeistApplication
             DatabaseAccessor dbAccessor = new DatabaseAccessor();
             try
             {
-                // Clear any existing items in the list box
-                lstPlayers.Items.Clear();
+                // Fetch the table of players
+                DataTable dtPlayers = dbAccessor.GetAdminPlayerList();
 
-                // Get the list of player names from the database
-                List<string> playerNames = dbAccessor.GetAllPlayerNames();
+                lstPlayers.DataSource = dtPlayers;
+                lstPlayers.DisplayMember = "PlayerName";
+                lstPlayers.ValueMember = "PlayerID";
 
-                // Add each name from the list to the list box
-                foreach (string name in playerNames)
+                // Clear the text boxes if no players exist
+                if (dtPlayers.Rows.Count == 0)
                 {
-                    lstPlayers.Items.Add(name);
+                    txtPlayerID.Text = "";
+                    txtUsername.Text = "";
+                    chkAccountLocked.Checked = false;
                 }
             }
             catch (Exception ex)
             {
-                MessageBox.Show("Database error: " + ex.Message, "Error");
+                MessageBox.Show("Database error: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
         private void lstPlayers_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (lstPlayers.SelectedIndex >= 0)
+            if (lstPlayers.SelectedIndex >= 0 && lstPlayers.SelectedItem is DataRowView)
             {
-                string selectedPlayer = lstPlayers.SelectedItem.ToString();
-                // Populate player details based on selection
-                // This would typically load data from the database
-                txtPlayerID.Text = ""; // Load from database
-                txtUsername.Text = selectedPlayer;
-                chkAccountLocked.Checked = false; // Load from database
+                DataRowView selectedRow = (DataRowView)lstPlayers.SelectedItem;
+
+                // Populate the UI text boxes using the bound database columns
+                txtPlayerID.Text = selectedRow["PlayerID"].ToString();
+                txtUsername.Text = selectedRow["PlayerName"].ToString();
+                chkAccountLocked.Checked = Convert.ToBoolean(selectedRow["IsLockedOut"]);
             }
         }
 
