@@ -159,8 +159,49 @@ namespace GridHeistApplication.DataAccess
             return status;
         }
 
+        //Delete Player
+        public int AdminDeletePlayer(int targetPlayerId)
+        {
+            int status = 0;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_AdminDeletePlayer", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@TargetPlayerID", targetPlayerId);
+                    try
+                    {
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != null) status = Convert.ToInt32(result);
+                    }
+                    catch (SqlException ex) { throw new Exception("Database error: " + ex.Message); }
+                }
+            }
+            return status;
+        }
 
-
+        // Kill Running Game
+        public int KillRunningGame(int gameId)
+        {
+            int status = 0;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_AdminKillGame", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@GameID", gameId);
+                    try
+                    {
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != null) status = Convert.ToInt32(result);
+                    }
+                    catch (SqlException ex) { throw new Exception("Database error: " + ex.Message); }
+                }
+            }
+            return status;
+        }
 
         public string GetGameStatus(int gameId)
         {
