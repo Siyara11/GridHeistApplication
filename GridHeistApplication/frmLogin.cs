@@ -30,7 +30,7 @@ namespace GridHeistApplication
             if (status == 1) // Success
             {
                 MessageBox.Show("Login Successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                frmGame gameForm = new frmGame();
+                frmGame gameForm = new frmGame(8, username);
                 gameForm.Show();
                 this.Hide();
             }
@@ -68,7 +68,7 @@ namespace GridHeistApplication
                 MessageBox.Show("Registration Successful! You are now logged in.", "Welcome", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 // Open the Game form and hide the login form
-                frmGame gameForm = new frmGame();
+                frmGame gameForm = new frmGame(8, username);
                 gameForm.Show();
                 this.Hide();
             }

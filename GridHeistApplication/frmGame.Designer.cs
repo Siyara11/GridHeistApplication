@@ -70,18 +70,20 @@
             this.pnlYourStatus.Controls.Add(this.lblYourPlayerValue);
             this.pnlYourStatus.Controls.Add(this.lblYourPlayerLabel);
             this.pnlYourStatus.Controls.Add(this.lblYourStatusTitle);
-            this.pnlYourStatus.Location = new System.Drawing.Point(35, 20);
+            this.pnlYourStatus.Location = new System.Drawing.Point(47, 25);
+            this.pnlYourStatus.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlYourStatus.Name = "pnlYourStatus";
-            this.pnlYourStatus.Size = new System.Drawing.Size(330, 120);
+            this.pnlYourStatus.Size = new System.Drawing.Size(439, 147);
             this.pnlYourStatus.TabIndex = 0;
             // 
             // lblYourGemsValue
             // 
             this.lblYourGemsValue.AutoSize = true;
             this.lblYourGemsValue.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblYourGemsValue.Location = new System.Drawing.Point(155, 80);
+            this.lblYourGemsValue.Location = new System.Drawing.Point(207, 98);
+            this.lblYourGemsValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblYourGemsValue.Name = "lblYourGemsValue";
-            this.lblYourGemsValue.Size = new System.Drawing.Size(33, 16);
+            this.lblYourGemsValue.Size = new System.Drawing.Size(42, 19);
             this.lblYourGemsValue.TabIndex = 4;
             this.lblYourGemsValue.Text = "3 / 5";
             // 
@@ -89,9 +91,10 @@
             // 
             this.lblYourGemsLabel.AutoSize = true;
             this.lblYourGemsLabel.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblYourGemsLabel.Location = new System.Drawing.Point(50, 80);
+            this.lblYourGemsLabel.Location = new System.Drawing.Point(67, 98);
+            this.lblYourGemsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblYourGemsLabel.Name = "lblYourGemsLabel";
-            this.lblYourGemsLabel.Size = new System.Drawing.Size(50, 16);
+            this.lblYourGemsLabel.Size = new System.Drawing.Size(61, 19);
             this.lblYourGemsLabel.TabIndex = 3;
             this.lblYourGemsLabel.Text = "Gems: ";
             // 
@@ -99,9 +102,10 @@
             // 
             this.lblYourPlayerValue.AutoSize = true;
             this.lblYourPlayerValue.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblYourPlayerValue.Location = new System.Drawing.Point(155, 55);
+            this.lblYourPlayerValue.Location = new System.Drawing.Point(207, 68);
+            this.lblYourPlayerValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblYourPlayerValue.Name = "lblYourPlayerValue";
-            this.lblYourPlayerValue.Size = new System.Drawing.Size(88, 16);
+            this.lblYourPlayerValue.Size = new System.Drawing.Size(113, 19);
             this.lblYourPlayerValue.TabIndex = 2;
             this.lblYourPlayerValue.Text = "[Player Name]";
             // 
@@ -109,9 +113,10 @@
             // 
             this.lblYourPlayerLabel.AutoSize = true;
             this.lblYourPlayerLabel.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblYourPlayerLabel.Location = new System.Drawing.Point(50, 55);
+            this.lblYourPlayerLabel.Location = new System.Drawing.Point(67, 68);
+            this.lblYourPlayerLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblYourPlayerLabel.Name = "lblYourPlayerLabel";
-            this.lblYourPlayerLabel.Size = new System.Drawing.Size(50, 16);
+            this.lblYourPlayerLabel.Size = new System.Drawing.Size(66, 19);
             this.lblYourPlayerLabel.TabIndex = 1;
             this.lblYourPlayerLabel.Text = "Player: ";
             // 
@@ -119,9 +124,10 @@
             // 
             this.lblYourStatusTitle.AutoSize = true;
             this.lblYourStatusTitle.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblYourStatusTitle.Location = new System.Drawing.Point(50, 20);
+            this.lblYourStatusTitle.Location = new System.Drawing.Point(67, 25);
+            this.lblYourStatusTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblYourStatusTitle.Name = "lblYourStatusTitle";
-            this.lblYourStatusTitle.Size = new System.Drawing.Size(93, 19);
+            this.lblYourStatusTitle.Size = new System.Drawing.Size(121, 24);
             this.lblYourStatusTitle.TabIndex = 0;
             this.lblYourStatusTitle.Text = "Your Status";
             // 
@@ -134,18 +140,20 @@
             this.pnlOpponentStatus.Controls.Add(this.lblOpponentNameValue);
             this.pnlOpponentStatus.Controls.Add(this.lblOpponentNameLabel);
             this.pnlOpponentStatus.Controls.Add(this.lblOpponentStatusTitle);
-            this.pnlOpponentStatus.Location = new System.Drawing.Point(435, 20);
+            this.pnlOpponentStatus.Location = new System.Drawing.Point(580, 25);
+            this.pnlOpponentStatus.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlOpponentStatus.Name = "pnlOpponentStatus";
-            this.pnlOpponentStatus.Size = new System.Drawing.Size(330, 120);
+            this.pnlOpponentStatus.Size = new System.Drawing.Size(439, 147);
             this.pnlOpponentStatus.TabIndex = 1;
             // 
             // lblOpponentGemsValue
             // 
             this.lblOpponentGemsValue.AutoSize = true;
             this.lblOpponentGemsValue.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblOpponentGemsValue.Location = new System.Drawing.Point(155, 80);
+            this.lblOpponentGemsValue.Location = new System.Drawing.Point(207, 98);
+            this.lblOpponentGemsValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblOpponentGemsValue.Name = "lblOpponentGemsValue";
-            this.lblOpponentGemsValue.Size = new System.Drawing.Size(33, 16);
+            this.lblOpponentGemsValue.Size = new System.Drawing.Size(42, 19);
             this.lblOpponentGemsValue.TabIndex = 4;
             this.lblOpponentGemsValue.Text = "2 / 5";
             // 
@@ -153,9 +161,10 @@
             // 
             this.lblOpponentGemsLabel.AutoSize = true;
             this.lblOpponentGemsLabel.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblOpponentGemsLabel.Location = new System.Drawing.Point(50, 80);
+            this.lblOpponentGemsLabel.Location = new System.Drawing.Point(67, 98);
+            this.lblOpponentGemsLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblOpponentGemsLabel.Name = "lblOpponentGemsLabel";
-            this.lblOpponentGemsLabel.Size = new System.Drawing.Size(50, 16);
+            this.lblOpponentGemsLabel.Size = new System.Drawing.Size(61, 19);
             this.lblOpponentGemsLabel.TabIndex = 3;
             this.lblOpponentGemsLabel.Text = "Gems: ";
             // 
@@ -163,9 +172,10 @@
             // 
             this.lblOpponentNameValue.AutoSize = true;
             this.lblOpponentNameValue.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblOpponentNameValue.Location = new System.Drawing.Point(155, 55);
+            this.lblOpponentNameValue.Location = new System.Drawing.Point(207, 68);
+            this.lblOpponentNameValue.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblOpponentNameValue.Name = "lblOpponentNameValue";
-            this.lblOpponentNameValue.Size = new System.Drawing.Size(100, 16);
+            this.lblOpponentNameValue.Size = new System.Drawing.Size(136, 19);
             this.lblOpponentNameValue.TabIndex = 2;
             this.lblOpponentNameValue.Text = "[Opponent Name]";
             // 
@@ -173,9 +183,10 @@
             // 
             this.lblOpponentNameLabel.AutoSize = true;
             this.lblOpponentNameLabel.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblOpponentNameLabel.Location = new System.Drawing.Point(50, 55);
+            this.lblOpponentNameLabel.Location = new System.Drawing.Point(67, 68);
+            this.lblOpponentNameLabel.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblOpponentNameLabel.Name = "lblOpponentNameLabel";
-            this.lblOpponentNameLabel.Size = new System.Drawing.Size(74, 16);
+            this.lblOpponentNameLabel.Size = new System.Drawing.Size(89, 19);
             this.lblOpponentNameLabel.TabIndex = 1;
             this.lblOpponentNameLabel.Text = "Opponent: ";
             // 
@@ -183,9 +194,10 @@
             // 
             this.lblOpponentStatusTitle.AutoSize = true;
             this.lblOpponentStatusTitle.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblOpponentStatusTitle.Location = new System.Drawing.Point(50, 20);
+            this.lblOpponentStatusTitle.Location = new System.Drawing.Point(67, 25);
+            this.lblOpponentStatusTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblOpponentStatusTitle.Name = "lblOpponentStatusTitle";
-            this.lblOpponentStatusTitle.Size = new System.Drawing.Size(124, 19);
+            this.lblOpponentStatusTitle.Size = new System.Drawing.Size(187, 24);
             this.lblOpponentStatusTitle.TabIndex = 0;
             this.lblOpponentStatusTitle.Text = "Opponent\'s Status";
             // 
@@ -203,27 +215,30 @@
             this.pnlGameBoard.Controls.Add(this.btn13);
             this.pnlGameBoard.Controls.Add(this.btn12);
             this.pnlGameBoard.Controls.Add(this.btn11);
-            this.pnlGameBoard.Location = new System.Drawing.Point(35, 160);
+            this.pnlGameBoard.Location = new System.Drawing.Point(47, 197);
+            this.pnlGameBoard.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlGameBoard.Name = "pnlGameBoard";
-            this.pnlGameBoard.Size = new System.Drawing.Size(550, 280);
+            this.pnlGameBoard.Size = new System.Drawing.Size(733, 505);
             this.pnlGameBoard.TabIndex = 2;
             // 
             // lblClickTile
             // 
             this.lblClickTile.AutoSize = true;
             this.lblClickTile.Font = new System.Drawing.Font("Arial", 11F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblClickTile.Location = new System.Drawing.Point(170, 20);
+            this.lblClickTile.Location = new System.Drawing.Point(227, 25);
+            this.lblClickTile.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblClickTile.Name = "lblClickTile";
-            this.lblClickTile.Size = new System.Drawing.Size(140, 17);
+            this.lblClickTile.Size = new System.Drawing.Size(168, 22);
             this.lblClickTile.TabIndex = 9;
             this.lblClickTile.Text = "Click a tile to move";
             // 
             // btn33
             // 
             this.btn33.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn33.Location = new System.Drawing.Point(370, 210);
+            this.btn33.Location = new System.Drawing.Point(493, 258);
+            this.btn33.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btn33.Name = "btn33";
-            this.btn33.Size = new System.Drawing.Size(80, 50);
+            this.btn33.Size = new System.Drawing.Size(107, 62);
             this.btn33.TabIndex = 8;
             this.btn33.Text = "(G)";
             this.btn33.UseVisualStyleBackColor = true;
@@ -231,9 +246,10 @@
             // btn32
             // 
             this.btn32.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn32.Location = new System.Drawing.Point(220, 210);
+            this.btn32.Location = new System.Drawing.Point(293, 258);
+            this.btn32.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btn32.Name = "btn32";
-            this.btn32.Size = new System.Drawing.Size(80, 50);
+            this.btn32.Size = new System.Drawing.Size(107, 62);
             this.btn32.TabIndex = 7;
             this.btn32.Text = "()";
             this.btn32.UseVisualStyleBackColor = true;
@@ -241,9 +257,10 @@
             // btn31
             // 
             this.btn31.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn31.Location = new System.Drawing.Point(70, 210);
+            this.btn31.Location = new System.Drawing.Point(93, 258);
+            this.btn31.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btn31.Name = "btn31";
-            this.btn31.Size = new System.Drawing.Size(80, 50);
+            this.btn31.Size = new System.Drawing.Size(107, 62);
             this.btn31.TabIndex = 6;
             this.btn31.Text = "(X)";
             this.btn31.UseVisualStyleBackColor = true;
@@ -251,9 +268,10 @@
             // btn23
             // 
             this.btn23.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn23.Location = new System.Drawing.Point(370, 130);
+            this.btn23.Location = new System.Drawing.Point(493, 160);
+            this.btn23.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btn23.Name = "btn23";
-            this.btn23.Size = new System.Drawing.Size(80, 50);
+            this.btn23.Size = new System.Drawing.Size(107, 62);
             this.btn23.TabIndex = 5;
             this.btn23.Text = "()";
             this.btn23.UseVisualStyleBackColor = true;
@@ -261,9 +279,10 @@
             // btn22
             // 
             this.btn22.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn22.Location = new System.Drawing.Point(220, 130);
+            this.btn22.Location = new System.Drawing.Point(293, 160);
+            this.btn22.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btn22.Name = "btn22";
-            this.btn22.Size = new System.Drawing.Size(80, 50);
+            this.btn22.Size = new System.Drawing.Size(107, 62);
             this.btn22.TabIndex = 4;
             this.btn22.Text = "(P2)";
             this.btn22.UseVisualStyleBackColor = true;
@@ -271,9 +290,10 @@
             // btn21
             // 
             this.btn21.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn21.Location = new System.Drawing.Point(70, 130);
+            this.btn21.Location = new System.Drawing.Point(93, 160);
+            this.btn21.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btn21.Name = "btn21";
-            this.btn21.Size = new System.Drawing.Size(80, 50);
+            this.btn21.Size = new System.Drawing.Size(107, 62);
             this.btn21.TabIndex = 3;
             this.btn21.Text = "()";
             this.btn21.UseVisualStyleBackColor = true;
@@ -281,9 +301,10 @@
             // btn13
             // 
             this.btn13.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn13.Location = new System.Drawing.Point(370, 50);
+            this.btn13.Location = new System.Drawing.Point(493, 62);
+            this.btn13.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btn13.Name = "btn13";
-            this.btn13.Size = new System.Drawing.Size(80, 50);
+            this.btn13.Size = new System.Drawing.Size(107, 62);
             this.btn13.TabIndex = 2;
             this.btn13.Text = "(G)";
             this.btn13.UseVisualStyleBackColor = true;
@@ -291,9 +312,10 @@
             // btn12
             // 
             this.btn12.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn12.Location = new System.Drawing.Point(220, 50);
+            this.btn12.Location = new System.Drawing.Point(293, 62);
+            this.btn12.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btn12.Name = "btn12";
-            this.btn12.Size = new System.Drawing.Size(80, 50);
+            this.btn12.Size = new System.Drawing.Size(107, 62);
             this.btn12.TabIndex = 1;
             this.btn12.Text = "(B)";
             this.btn12.UseVisualStyleBackColor = true;
@@ -301,9 +323,10 @@
             // btn11
             // 
             this.btn11.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btn11.Location = new System.Drawing.Point(70, 50);
+            this.btn11.Location = new System.Drawing.Point(93, 62);
+            this.btn11.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btn11.Name = "btn11";
-            this.btn11.Size = new System.Drawing.Size(80, 50);
+            this.btn11.Size = new System.Drawing.Size(107, 62);
             this.btn11.TabIndex = 0;
             this.btn11.Text = "(P1)";
             this.btn11.UseVisualStyleBackColor = true;
@@ -313,29 +336,32 @@
             this.pnlActionLog.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
             this.pnlActionLog.Controls.Add(this.txtActionLog);
             this.pnlActionLog.Controls.Add(this.lblActionLogTitle);
-            this.pnlActionLog.Location = new System.Drawing.Point(35, 455);
+            this.pnlActionLog.Location = new System.Drawing.Point(47, 710);
+            this.pnlActionLog.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pnlActionLog.Name = "pnlActionLog";
-            this.pnlActionLog.Size = new System.Drawing.Size(550, 140);
+            this.pnlActionLog.Size = new System.Drawing.Size(733, 172);
             this.pnlActionLog.TabIndex = 3;
             // 
             // txtActionLog
             // 
             this.txtActionLog.BackColor = System.Drawing.Color.White;
-            this.txtActionLog.Location = new System.Drawing.Point(15, 35);
+            this.txtActionLog.Location = new System.Drawing.Point(20, 43);
+            this.txtActionLog.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.txtActionLog.Multiline = true;
             this.txtActionLog.Name = "txtActionLog";
             this.txtActionLog.ReadOnly = true;
             this.txtActionLog.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtActionLog.Size = new System.Drawing.Size(520, 90);
+            this.txtActionLog.Size = new System.Drawing.Size(692, 110);
             this.txtActionLog.TabIndex = 1;
             // 
             // lblActionLogTitle
             // 
             this.lblActionLogTitle.AutoSize = true;
             this.lblActionLogTitle.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblActionLogTitle.Location = new System.Drawing.Point(15, 10);
+            this.lblActionLogTitle.Location = new System.Drawing.Point(20, 12);
+            this.lblActionLogTitle.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.lblActionLogTitle.Name = "lblActionLogTitle";
-            this.lblActionLogTitle.Size = new System.Drawing.Size(75, 16);
+            this.lblActionLogTitle.Size = new System.Drawing.Size(94, 19);
             this.lblActionLogTitle.TabIndex = 0;
             this.lblActionLogTitle.Text = "Action Log";
             // 
@@ -343,9 +369,10 @@
             // 
             this.btnQuitGame.BackColor = System.Drawing.Color.LightCoral;
             this.btnQuitGame.Font = new System.Drawing.Font("Arial", 14F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.btnQuitGame.Location = new System.Drawing.Point(635, 455);
+            this.btnQuitGame.Location = new System.Drawing.Point(833, 197);
+            this.btnQuitGame.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.btnQuitGame.Name = "btnQuitGame";
-            this.btnQuitGame.Size = new System.Drawing.Size(130, 140);
+            this.btnQuitGame.Size = new System.Drawing.Size(173, 172);
             this.btnQuitGame.TabIndex = 4;
             this.btnQuitGame.Text = "Quit Game";
             this.btnQuitGame.UseVisualStyleBackColor = false;
@@ -353,14 +380,15 @@
             // 
             // frmGame
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(800, 620);
+            this.ClientSize = new System.Drawing.Size(1071, 895);
             this.Controls.Add(this.btnQuitGame);
             this.Controls.Add(this.pnlActionLog);
             this.Controls.Add(this.pnlGameBoard);
             this.Controls.Add(this.pnlOpponentStatus);
             this.Controls.Add(this.pnlYourStatus);
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "frmGame";
             this.Text = "Grid Heist - Game";
             this.pnlYourStatus.ResumeLayout(false);
@@ -368,7 +396,7 @@
             this.pnlOpponentStatus.ResumeLayout(false);
             this.pnlOpponentStatus.PerformLayout();
             this.pnlGameBoard.ResumeLayout(false);
-            this.pnlGameBoard.ResumeLayout(false);
+            this.pnlGameBoard.PerformLayout();
             this.pnlActionLog.ResumeLayout(false);
             this.pnlActionLog.PerformLayout();
             this.ResumeLayout(false);

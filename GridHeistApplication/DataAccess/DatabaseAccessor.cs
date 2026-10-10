@@ -203,6 +203,81 @@ namespace GridHeistApplication.DataAccess
             return status;
         }
 
+        //game relatd
+        //Generate Game Board
+        public int GenerateGameBoard(int hostPlayerId)
+        {
+            int newGameId = 0;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_GenerateGameBoard", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@HostPlayerID", hostPlayerId);
+
+                    // Set up the output parameter to capture the new Game ID
+                    SqlParameter outputIdParam = new SqlParameter("@NewGameID", SqlDbType.Int)
+                    {
+                        Direction = ParameterDirection.Output
+                    };
+                    cmd.Parameters.Add(outputIdParam);
+
+                    try
+                    {
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                        if (outputIdParam.Value != DBNull.Value)
+                        {
+                            newGameId = Convert.ToInt32(outputIdParam.Value);
+                        }
+                    }
+                    catch (SqlException ex) { throw new Exception("Database error generating board: " + ex.Message); }
+                }
+            }
+            return newGameId;
+        }
+
+        // Place Initial Items
+        public bool PlaceInitialItems(int gameId)
+        {
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_PlaceInitialItems", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@GameID", gameId);
+                    try
+                    {
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                        return true;
+                    }
+                    catch (SqlException ex) { throw new Exception("Database error placing items: " + ex.Message); }
+                }
+            }
+        }
+
+        //Game board
+        public DataTable GetGameBoard(int gameId)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_GetGameBoard", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@GameID", gameId);
+                    try
+                    {
+                        conn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        da.Fill(dt);
+                    }
+                    catch (SqlException ex) { throw new Exception("Database error fetching board: " + ex.Message); }
+                }
+            }
+            return dt;
+        }
         public string GetGameStatus(int gameId)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))
