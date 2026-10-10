@@ -278,6 +278,58 @@ namespace GridHeistApplication.DataAccess
             }
             return dt;
         }
+
+
+
+        //Move Player
+
+        public int MovePlayer(int gameId, int playerId, int targetTileId)
+        {
+            int status = 0;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_MovePlayer", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@GameID", gameId);
+                    cmd.Parameters.AddWithValue("@PlayerID", playerId);
+                    cmd.Parameters.AddWithValue("@TargetTileID", targetTileId);
+                    try
+                    {
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != null) status = Convert.ToInt32(result);
+                    }
+                    catch (SqlException ex) { throw new Exception("Database error moving: " + ex.Message); }
+                }
+            }
+            return status;
+        }
+
+        // Get the player's current tile ID to draw them on the board
+        public int GetPlayerCurrentTile(int gameId, int playerId)
+        {
+            int tileId = 0;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("SELECT CurrentTileID FROM GamePlayers WHERE GameID = @GameID AND PlayerID = @PlayerID", conn))
+                {
+                    cmd.Parameters.AddWithValue("@GameID", gameId);
+                    cmd.Parameters.AddWithValue("@PlayerID", playerId);
+                    try
+                    {
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != null) tileId = Convert.ToInt32(result);
+                    }
+                    catch (Exception) { /* Ignore for prototype */ }
+                }
+            }
+            return tileId;
+        }
+
+
+
         public string GetGameStatus(int gameId)
         {
             using (SqlConnection connection = new SqlConnection(connectionString))

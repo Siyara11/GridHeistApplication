@@ -43,50 +43,59 @@ namespace GridHeistApplication
             DatabaseAccessor dbAccessor = new DatabaseAccessor();
             DataTable dtBoard = dbAccessor.GetGameBoard(currentGameId);
 
-            // Ensure the panel is clear before drawing
+            // Fetch where the player is currently standing
+            int myCurrentTile = dbAccessor.GetPlayerCurrentTile(currentGameId, currentHostPlayerId);
+
             pnlGameBoard.Controls.Clear();
 
-            int buttonSize = 45; // Pixel size of each tile
-            int padding = 2;     // Space between tiles
-            int startX = 20;     // Offset from the left edge of the panel
-            int startY = 20;     // Offset from the top edge of the panel
+            int buttonSize = 45;
+            int padding = 2;
+            int startX = 20;
+            int startY = 20;
 
             foreach (DataRow row in dtBoard.Rows)
             {
-                // Database rows/columns are 1-8, but math works best 0-7
                 int r = Convert.ToInt32(row["RowNumber"]) - 1;
                 int c = Convert.ToInt32(row["ColumnNumber"]) - 1;
+                int tileId = Convert.ToInt32(row["TileID"]);
 
                 string tileType = row["TileType"].ToString();
                 string itemName = row["ItemName"] != DBNull.Value ? row["ItemName"].ToString() : "";
 
-                // Create the physical button
                 Button btnTile = new Button();
                 btnTile.Width = buttonSize;
                 btnTile.Height = buttonSize;
-                btnTile.Left = startX + (c * (buttonSize + padding)); // X coordinate
-                btnTile.Top = startY + (r * (buttonSize + padding));  // Y coordinate
+                btnTile.Left = startX + (c * (buttonSize + padding));
+                btnTile.Top = startY + (r * (buttonSize + padding));
+                btnTile.Tag = tileId;
 
-                btnTile.Tag = row["TileID"];
+                // Attach the click event to make the tile interactive
+                btnTile.Click += new EventHandler(Tile_Click);
 
-                // Style the button based on the TileType
                 if (tileType == "Firewall") btnTile.BackColor = System.Drawing.Color.DarkGray;
                 else if (tileType == "Home") btnTile.BackColor = System.Drawing.Color.LightBlue;
                 else if (tileType == "Exit") btnTile.BackColor = System.Drawing.Color.LightGreen;
-                else btnTile.BackColor = System.Drawing.Color.White; // Standard floor
+                else btnTile.BackColor = System.Drawing.Color.White;
 
-                // Put an indicator on the button if there is an item
-                if (!string.IsNullOrEmpty(itemName))
+                // Draw the player if they are standing here
+                if (tileId == myCurrentTile)
+                {
+                    btnTile.Text = "P";
+                    btnTile.BackColor = System.Drawing.Color.Yellow; // Highlight the player!
+                    btnTile.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Bold);
+                    btnTile.ForeColor = System.Drawing.Color.Black;
+                }
+                // Otherwise, draw the item if there is one
+                else if (!string.IsNullOrEmpty(itemName))
                 {
                     if (itemName == "Data Chip") btnTile.Text = "C";
                     else if (itemName.Contains("Fragment")) btnTile.Text = "F";
-                    else btnTile.Text = "T"; // Tool
+                    else btnTile.Text = "T";
 
                     btnTile.Font = new System.Drawing.Font("Arial", 10F, System.Drawing.FontStyle.Bold);
                     btnTile.ForeColor = System.Drawing.Color.DarkBlue;
                 }
 
-                // Add the finished button to the visual panel
                 pnlGameBoard.Controls.Add(btnTile);
             }
         }
@@ -129,6 +138,35 @@ namespace GridHeistApplication
                 MessageBox.Show(ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+        //Click Tile
+        private void Tile_Click(object sender, EventArgs e)
+        {
+            Button clickedButton = sender as Button;
+            if (clickedButton != null && clickedButton.Tag != null)
+            {
+                int targetTileId = Convert.ToInt32(clickedButton.Tag);
+
+                DatabaseAccessor dbAccessor = new DatabaseAccessor();
+                int moveStatus = dbAccessor.MovePlayer(currentGameId, currentHostPlayerId, targetTileId);
+
+                if (moveStatus == 1)
+                {
+                    txtActionLog.AppendText("Moved successfully!\r\n");
+                    DrawGameBoard(); // Redraw the board to show your new position
+                }
+                else if (moveStatus == -1)
+                {
+                    txtActionLog.AppendText("Move blocked: Tile is occupied by another player.\r\n");
+                }
+                else
+                {
+                    txtActionLog.AppendText("Invalid move: You can only move 1 space to a walkable floor.\r\n");
+                }
+            }
+        }
+
+
 
         private void btnQuitGame_Click(object sender, EventArgs e)
         {
