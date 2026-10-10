@@ -327,6 +327,31 @@ namespace GridHeistApplication.DataAccess
             }
             return tileId;
         }
+        //get Score
+        public int GetPlayerScore(int gameId, int playerId)
+        {
+            int score = 0;
+            using (System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                string query = "SELECT Score FROM GamePlayers WHERE GameID = @GameID AND PlayerID = @PlayerID";
+                using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand(query, conn))
+                {
+                    cmd.Parameters.AddWithValue("@GameID", gameId);
+                    cmd.Parameters.AddWithValue("@PlayerID", playerId);
+                    try
+                    {
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != DBNull.Value && result != null)
+                        {
+                            score = Convert.ToInt32(result);
+                        }
+                    }
+                    catch (Exception) { /* ignore */ }
+                }
+            }
+            return score;
+        }
 
 
 
