@@ -153,9 +153,22 @@ namespace GridHeistApplication
                 if (moveStatus == 1)
                 {
                     txtActionLog.AppendText("Moved successfully!\r\n");
-                    DrawGameBoard(); // Redraw the board to show your new position
+
+                    // Redraw the board and update the score label
+                    DrawGameBoard();
+                    int currentScore = dbAccessor.GetPlayerScore(currentGameId, currentHostPlayerId);
+                    lblYourGemsValue.Text = currentScore.ToString() + " / 30";
                 }
-                else if (moveStatus == -1)
+                else if (moveStatus == 2)
+                {
+                    txtActionLog.AppendText(">>> MOVED AND ACQUIRED ITEM! +10 Points! <<<\r\n");
+
+                    // Redraw the board and update the score label
+                    DrawGameBoard();
+                    int currentScore = dbAccessor.GetPlayerScore(currentGameId, currentHostPlayerId);
+                    lblYourGemsValue.Text = currentScore.ToString() + " / 30";
+                }
+                else if s(moveStatus == -1)
                 {
                     txtActionLog.AppendText("Move blocked: Tile is occupied by another player.\r\n");
                 }
@@ -163,6 +176,10 @@ namespace GridHeistApplication
                 {
                     txtActionLog.AppendText("Invalid move: You can only move 1 space to a walkable floor.\r\n");
                 }
+
+                // scroll the action log to the bottom automatically
+                txtActionLog.SelectionStart = txtActionLog.Text.Length;
+                txtActionLog.ScrollToCaret();
             }
         }
 
