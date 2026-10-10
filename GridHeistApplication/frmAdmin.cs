@@ -135,28 +135,58 @@ namespace GridHeistApplication
 
         private void btnRemoveSelected_Click(object sender, EventArgs e)
         {
-            if (lstPlayers.SelectedIndex >= 0)
+            if (lstPlayers.SelectedIndex >= 0 && !string.IsNullOrEmpty(txtPlayerID.Text))
             {
-                DialogResult result = MessageBox.Show("Are you sure you want to remove this player?", "Remove Player", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
+                int playerId = Convert.ToInt32(txtPlayerID.Text);
+                string username = txtUsername.Text;
+
+                DialogResult result = MessageBox.Show($"Are you sure you want to permanently delete {username}? This will wipe their inventory and game history.", "Confirm Delete", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
                 if (result == DialogResult.Yes)
                 {
-                    // Remove selected player logic
-                    MessageBox.Show("Remove Player functionality would go here.", "Remove Player");
+                    DatabaseAccessor dbAccessor = new DatabaseAccessor();
+                    int status = dbAccessor.AdminDeletePlayer(playerId);
+
+                    if (status == 1)
+                    {
+                        MessageBox.Show("Player deleted successfully.", "Removed", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        LoadPlayers();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Failed to delete player.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    }
                 }
             }
             else
             {
-                MessageBox.Show("Please select a player first.", "No Selection");
+                MessageBox.Show("Please select a player first.", "No Selection", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
+ 
+
+        //Admin Kill the runnuig game
         private void btnKillRunningGame_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("Are you sure you want to kill the running game? This will disconnect all players.", "Kill Running Game", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+            DialogResult result = MessageBox.Show("Are you sure you want to kill the active test game? This will stop GameID 1.", "Kill Running Game", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
+
             if (result == DialogResult.Yes)
             {
-                // Kill running game logic
-                MessageBox.Show("Running game has been terminated.", "Game Terminated");
+                DatabaseAccessor dbAccessor = new DatabaseAccessor();
+
+                // Hardcoded to kill Game 1 for the prototype test scenario
+                int status = dbAccessor.KillRunningGame(1);
+
+                if (status == 1)
+                {
+                    MessageBox.Show("Running game has been terminated and players marked as finished.", "Game Terminated", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                }
+                else
+                {
+                    MessageBox.Show("Could not find an active game to terminate.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+
             }
         }
 
