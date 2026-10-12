@@ -168,7 +168,7 @@ namespace GridHeistApplication
                     int currentScore = dbAccessor.GetPlayerScore(currentGameId, currentHostPlayerId);
                     lblYourGemsValue.Text = currentScore.ToString() + " / 30";
                 }
-                else if s(moveStatus == -1)
+                else if (moveStatus == -1)
                 {
                     txtActionLog.AppendText("Move blocked: Tile is occupied by another player.\r\n");
                 }
