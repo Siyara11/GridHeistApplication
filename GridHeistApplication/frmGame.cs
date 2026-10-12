@@ -16,6 +16,7 @@ namespace GridHeistApplication
         private int currentGameId = 0;
         private int currentHostPlayerId;
         private string currentHostPlayerName;
+        private Timer npcTimer;
 
         // Update the constructor to accept the player's details
         public frmGame(int loggedInPlayerId, string loggedInPlayerName)
@@ -132,6 +133,10 @@ namespace GridHeistApplication
 
                 // Draw the visual grid on the screen based on the database
                 DrawGameBoard();
+                npcTimer = new Timer();
+                npcTimer.Interval = 3000; // 3000 milliseconds = 3 seconds
+                npcTimer.Tick += new EventHandler(NpcTimer_Tick);
+                npcTimer.Start();
             }
             catch (Exception ex)
             {
@@ -183,6 +188,27 @@ namespace GridHeistApplication
             }
         }
 
+        private void NpcTimer_Tick(object sender, EventArgs e)
+        {
+            try
+            {
+                DatabaseAccessor dbAccessor = new DatabaseAccessor();
+                dbAccessor.MoveNPC(currentGameId);
+
+                // Redraw the board to show the movement
+                DrawGameBoard();
+            }
+            catch (Exception ex)
+            {
+
+                txtActionLog.AppendText("NPC Move Error: " + ex.Message + "\r\n");
+
+                // Scroll to the bottom of the log
+                txtActionLog.SelectionStart = txtActionLog.Text.Length;
+                txtActionLog.ScrollToCaret();
+            }
+        }
+
 
 
         private void btnQuitGame_Click(object sender, EventArgs e)
@@ -192,6 +218,7 @@ namespace GridHeistApplication
             {
                 // In the future, this will call a DAO method to mark the player as "Left"
                 this.Close();
+                npcTimer.Stop();
 
                 // Show the login screen again when closing the game
                 Application.OpenForms["frmLogin"].Show();

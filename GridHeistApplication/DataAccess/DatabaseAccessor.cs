@@ -354,6 +354,21 @@ namespace GridHeistApplication.DataAccess
         }
 
 
+        //Move NPC DB connection
+        public void MoveNPC(int gameId)
+        {
+            using (System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(connectionString))
+            {
+                using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand("sp_MoveNPC", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@GameID", gameId);
+
+                    conn.Open();
+                    cmd.ExecuteNonQuery(); 
+                }
+            }
+        }
 
         public string GetGameStatus(int gameId)
         {
