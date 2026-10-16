@@ -31,7 +31,7 @@
             this.btnRegister = new System.Windows.Forms.Button();
             this.btnLogin = new System.Windows.Forms.Button();
             this.txtPassword = new System.Windows.Forms.TextBox();
-            this.txtUsername = new System.Windows.Forms.TextBox();
+            this.txtExample = new System.Windows.Forms.TextBox();
             this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
@@ -70,13 +70,15 @@
             this.txtPassword.Size = new System.Drawing.Size(260, 34);
             this.txtPassword.TabIndex = 9;
             // 
-            // txtUsername
+            // txtExample
             // 
-            this.txtUsername.Location = new System.Drawing.Point(440, 154);
-            this.txtUsername.Margin = new System.Windows.Forms.Padding(8, 5, 8, 5);
-            this.txtUsername.Name = "txtUsername";
-            this.txtUsername.Size = new System.Drawing.Size(260, 34);
-            this.txtUsername.TabIndex = 8;
+            this.txtExample.Location = new System.Drawing.Point(440, 154);
+            this.txtExample.Margin = new System.Windows.Forms.Padding(8, 5, 8, 5);
+            this.txtExample.Name = "txtExample";
+            this.txtExample.Size = new System.Drawing.Size(260, 34);
+            this.txtExample.TabIndex = 8;
+            this.txtExample.TextChanged += new System.EventHandler(this.txtUsername_TextChanged);
+            this.txtExample.VisibleChanged += new System.EventHandler(this.txtUsername_VisibleChanged);
             // 
             // label2
             // 
@@ -119,7 +121,7 @@
             this.Controls.Add(this.btnRegister);
             this.Controls.Add(this.btnLogin);
             this.Controls.Add(this.txtPassword);
-            this.Controls.Add(this.txtUsername);
+            this.Controls.Add(this.txtExample);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Font = new System.Drawing.Font("Microsoft Sans Serif", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
@@ -136,7 +138,7 @@
         private System.Windows.Forms.Button btnRegister;
         private System.Windows.Forms.Button btnLogin;
         private System.Windows.Forms.TextBox txtPassword;
-        private System.Windows.Forms.TextBox txtUsername;
+        private System.Windows.Forms.TextBox txtExample;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label3;

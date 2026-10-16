@@ -21,7 +21,7 @@ namespace GridHeistApplication
         //Login button click event handler
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            string username = txtUsername.Text;
+            string username = txtExample.Text;
             string password = txtPassword.Text;
 
             DatabaseAccessor dbAccessor = new DatabaseAccessor();
@@ -48,7 +48,7 @@ namespace GridHeistApplication
         //Register button click event handler
         private void btnRegister_Click(object sender, EventArgs e)
         {
-            string username = txtUsername.Text.Trim();
+            string username = txtExample.Text.Trim();
             string password = txtPassword.Text.Trim();
 
             // Basic validation to prevent empty fields
@@ -76,6 +76,16 @@ namespace GridHeistApplication
             {
                 MessageBox.Show("That username is already taken. Please choose another one.", "Registration Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private void txtUsername_TextChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void txtUsername_VisibleChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
