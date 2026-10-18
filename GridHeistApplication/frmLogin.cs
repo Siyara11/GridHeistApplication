@@ -24,8 +24,8 @@ namespace GridHeistApplication
             string username = txtExample.Text;
             string password = txtPassword.Text;
 
-            DatabaseAccessor dbAccessor = new DatabaseAccessor();
-            int status = dbAccessor.ValidateLogin(username, password);
+            LoginDAO loginDAO = new LoginDAO();
+            int status = loginDAO.ValidateLogin(username, password);
 
             if (status == 1) // Success
             {
@@ -58,10 +58,10 @@ namespace GridHeistApplication
                 return;
             }
 
-            DatabaseAccessor dbAccessor = new DatabaseAccessor();
+            LoginDAO loginDAO = new LoginDAO();
 
             // Call the DAO method you just added to DatabaseAccessor.cs
-            int status = dbAccessor.RegisterPlayer(username, password);
+            int status = loginDAO.RegisterPlayer(username, password);
 
             if (status == 1) // Success
             {
