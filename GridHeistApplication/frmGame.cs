@@ -41,11 +41,11 @@ namespace GridHeistApplication
 
         private void DrawGameBoard()
         {
-            DatabaseAccessor dbAccessor = new DatabaseAccessor();
-            DataTable dtBoard = dbAccessor.GetGameBoard(currentGameId);
+             GameDAO gameDAO = new GameDAO();
+            DataTable dtBoard = gameDAO.GetGameBoard(currentGameId);
 
             // Fetch where the player is currently standing
-            int myCurrentTile = dbAccessor.GetPlayerCurrentTile(currentGameId, currentHostPlayerId);
+            int myCurrentTile = gameDAO.GetPlayerCurrentTile(currentGameId, currentHostPlayerId);
 
             pnlGameBoard.Controls.Clear();
 
@@ -107,20 +107,20 @@ namespace GridHeistApplication
         {
             try
             {
-                DatabaseAccessor dbAccessor = new DatabaseAccessor();
+                 GameDAO gameDAO = new GameDAO();
 
                 txtActionLog.AppendText($"Welcome {currentHostPlayerName}!\r\n");
                 txtActionLog.AppendText("Initializing game board in database...\r\n");
 
                 //Generate the board in the database
-                currentGameId = dbAccessor.GenerateGameBoard(currentHostPlayerId);
+                currentGameId = gameDAO.GenerateGameBoard(currentHostPlayerId);
 
                 if (currentGameId > 0)
                 {
                     txtActionLog.AppendText($"Success! Game Session #{currentGameId} created with 64 tiles.\r\n");
 
                     // Place the initial items in the database
-                    bool itemsPlaced = dbAccessor.PlaceInitialItems(currentGameId);
+                    bool itemsPlaced = gameDAO.PlaceInitialItems(currentGameId);
                     if (itemsPlaced)
                     {
                         txtActionLog.AppendText("Initial items placed successfully.\r\n");
@@ -152,8 +152,8 @@ namespace GridHeistApplication
             {
                 int targetTileId = Convert.ToInt32(clickedButton.Tag);
 
-                DatabaseAccessor dbAccessor = new DatabaseAccessor();
-                int moveStatus = dbAccessor.MovePlayer(currentGameId, currentHostPlayerId, targetTileId);
+                 GameDAO gameDAO = new GameDAO();
+                int moveStatus = gameDAO.MovePlayer(currentGameId, currentHostPlayerId, targetTileId);
 
                 if (moveStatus == 1)
                 {
@@ -161,7 +161,7 @@ namespace GridHeistApplication
 
                     // Redraw the board and update the score label
                     DrawGameBoard();
-                    int currentScore = dbAccessor.GetPlayerScore(currentGameId, currentHostPlayerId);
+                    int currentScore = gameDAO.GetPlayerScore(currentGameId, currentHostPlayerId);
                     lblYourGemsValue.Text = currentScore.ToString() + " / 30";
                 }
                 else if (moveStatus == 2)
@@ -170,7 +170,7 @@ namespace GridHeistApplication
 
                     // Redraw the board and update the score label
                     DrawGameBoard();
-                    int currentScore = dbAccessor.GetPlayerScore(currentGameId, currentHostPlayerId);
+                    int currentScore = gameDAO.GetPlayerScore(currentGameId, currentHostPlayerId);
                     lblYourGemsValue.Text = currentScore.ToString() + " / 30";
                 }
                 else if (moveStatus == -1)
@@ -192,8 +192,8 @@ namespace GridHeistApplication
         {
             try
             {
-                DatabaseAccessor dbAccessor = new DatabaseAccessor();
-                dbAccessor.MoveNPC(currentGameId);
+                 GameDAO gameDAO = new GameDAO();
+                gameDAO.MoveNPC(currentGameId);
 
                 // Redraw the board to show the movement
                 DrawGameBoard();

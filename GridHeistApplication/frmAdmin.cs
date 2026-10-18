@@ -22,11 +22,11 @@ namespace GridHeistApplication
 
         private void LoadPlayers()
         {
-            DatabaseAccessor dbAccessor = new DatabaseAccessor();
+            AdminDAO adminDAO = new AdminDAO();
             try
             {
                 // Fetch the table of players
-                DataTable dtPlayers = dbAccessor.GetAdminPlayerList();
+                DataTable dtPlayers = adminDAO.GetAdminPlayerList();
 
                 lstPlayers.DataSource = dtPlayers;
                 lstPlayers.DisplayMember = "PlayerName";
@@ -87,8 +87,8 @@ namespace GridHeistApplication
                 return;
             }
 
-            DatabaseAccessor dbAccessor = new DatabaseAccessor();
-            int status = dbAccessor.AdminAddPlayer(username, "Temp#123", false);
+            AdminDAO adminDAO = new AdminDAO();
+            int status = adminDAO.AdminAddPlayer(username, "Temp#123", false);
 
             if (status == 1)
             {
@@ -112,10 +112,10 @@ namespace GridHeistApplication
 
                 bool unlockAccount = !chkAccountLocked.Checked;
 
-                DatabaseAccessor dbAccessor = new DatabaseAccessor();
+                AdminDAO adminDAO = new AdminDAO();
 
                 // Passing an empty string for the password means we aren't changing it
-                int status = dbAccessor.AdminUpdatePlayer(playerId, newUsername, "", unlockAccount, false);
+                int status = adminDAO.AdminUpdatePlayer(playerId, newUsername, "", unlockAccount, false);
 
                 if (status == 1)
                 {
@@ -144,8 +144,8 @@ namespace GridHeistApplication
 
                 if (result == DialogResult.Yes)
                 {
-                    DatabaseAccessor dbAccessor = new DatabaseAccessor();
-                    int status = dbAccessor.AdminDeletePlayer(playerId);
+                    AdminDAO adminDAO = new AdminDAO();
+                    int status = adminDAO.AdminDeletePlayer(playerId);
 
                     if (status == 1)
                     {
@@ -173,10 +173,10 @@ namespace GridHeistApplication
 
             if (result == DialogResult.Yes)
             {
-                DatabaseAccessor dbAccessor = new DatabaseAccessor();
+                AdminDAO adminDAO = new AdminDAO();
 
                 // Hardcoded to kill Game 1 for the prototype test scenario
-                int status = dbAccessor.KillRunningGame(1);
+                int status = adminDAO.KillRunningGame(1);
 
                 if (status == 1)
                 {
