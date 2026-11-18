@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="DataAccess\AdminDAO.cs" />
     <Compile Include="DataAccess\DatabaseAccessor.cs" />
+    <Compile Include="DataAccess\GameDAO.cs" />
+    <Compile Include="DataAccess\LoginDAO.cs" />
     <Compile Include="frmAdmin.cs">
       <SubType>Form</SubType>
     </Compile>
