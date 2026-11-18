@@ -11,7 +11,7 @@ namespace GridHeistApplication.DataAccess
     public class LoginDAO
     {
 
-        private readonly string connectionString = "Server=DESKTOP-133\\SQLEXPRESS;Database=GridHeist3;Integrated Security=True;";
+        private readonly string connectionString = "Server=SIYARA\\MSSQLSERVER01;Database=GridHeistDB2;Integrated Security=True;";
 
         public int ValidateLogin(string username, string password, out int playerId)
         {
