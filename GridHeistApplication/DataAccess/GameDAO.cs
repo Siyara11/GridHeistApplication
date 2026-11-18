@@ -10,7 +10,6 @@ namespace GridHeistApplication.DataAccess
 {
     public class GameDAO
     {
-        // IMPORTANT: Replace this with your actual connection string!
         private readonly string connectionString = "Server=SIYARA\\MSSQLSERVER01;Database=GridHeistDB2;Integrated Security=True;";
 
         //generate game Board

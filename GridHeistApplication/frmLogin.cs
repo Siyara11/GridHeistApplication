@@ -25,14 +25,27 @@ namespace GridHeistApplication
             string password = txtPassword.Text;
 
             LoginDAO loginDAO = new LoginDAO();
-            int status = loginDAO.ValidateLogin(username, password);
+            int playerId;
+            int status = loginDAO.ValidateLogin(username, password, out playerId);
 
             if (status == 1) // Success
             {
                 MessageBox.Show("Login Successful!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                frmGame gameForm = new frmGame(8, username);
-                gameForm.Show();
-                this.Hide();
+
+                bool isAdmin = loginDAO.GetUserAdminStatus(username);
+
+                if (isAdmin)
+                {
+                    frmAdmin adminForm = new frmAdmin();
+                    adminForm.Show();
+                    this.Hide();
+                }
+                else
+                {
+                    frmGame gameForm = new frmGame(playerId, username);
+                    gameForm.Show();
+                    this.Hide();
+                }
             }
             else if (status == -1) // Locked Out
             {
@@ -44,6 +57,8 @@ namespace GridHeistApplication
                 MessageBox.Show("Invalid username or password.", "Login Failed", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
+
+
 
         //Register button click event handler
         private void btnRegister_Click(object sender, EventArgs e)
@@ -59,16 +74,14 @@ namespace GridHeistApplication
             }
 
             LoginDAO loginDAO = new LoginDAO();
-
-            // Call the DAO method you just added to DatabaseAccessor.cs
-            int status = loginDAO.RegisterPlayer(username, password);
+            int playerId;
+            int status = loginDAO.RegisterPlayer(username, password, out playerId);
 
             if (status == 1) // Success
             {
                 MessageBox.Show("Registration Successful! You are now logged in.", "Welcome", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                // Open the Game form and hide the login form
-                frmGame gameForm = new frmGame(8, username);
+                frmGame gameForm = new frmGame(playerId, username);
                 gameForm.Show();
                 this.Hide();
             }
@@ -77,6 +90,8 @@ namespace GridHeistApplication
                 MessageBox.Show("That username is already taken. Please choose another one.", "Registration Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
+
+       
 
         private void txtUsername_TextChanged(object sender, EventArgs e)
         {
