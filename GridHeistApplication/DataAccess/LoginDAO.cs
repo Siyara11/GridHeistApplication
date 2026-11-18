@@ -8,73 +8,61 @@ using System.Threading.Tasks;
 
 namespace GridHeistApplication.DataAccess
 {
-    internal class LoginDAO
+    public class LoginDAO
     {
-        private readonly string connectionString = "Server=SIYARA\\MSSQLSERVER01;Database=GridHeistDB;Integrated Security=True;";
-        public int ValidateLogin(string username, string password)
+
+        private readonly string connectionString = "Server=SIYARA\\MSSQLSERVER01;Database=GridHeistDB2;Integrated Security=True;";
+
+        public int ValidateLogin(string username, string password, out int playerId)
         {
-            int loginStatus = 0; // Default to invalid
+            playerId = 0;
 
             using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand("dbo.sp_ValidatePlayer", conn))
             {
-                using (SqlCommand cmd = new SqlCommand("sp_ValidatePlayer", conn))
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("@PlayerName", SqlDbType.VarChar, 50).Value = username;
+                cmd.Parameters.Add("@Password", SqlDbType.VarChar, 100).Value = password;
+
+                SqlParameter idParam = cmd.Parameters.Add("@PlayerID", SqlDbType.Int);
+                idParam.Direction = ParameterDirection.Output;
+
+                conn.Open();
+                int status = Convert.ToInt32(cmd.ExecuteScalar());
+
+                if (status == 1 && idParam.Value != DBNull.Value)
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@PlayerName", username);
-                    cmd.Parameters.AddWithValue("@PasswordHash", password);
-
-                    try
-                    {
-                        conn.Open();
-                        // ExecuteScalar grabs the single 'LoginStatus' value returned by our SELECT in SQL
-                        object result = cmd.ExecuteScalar();
-
-                        if (result != null)
-                        {
-                            loginStatus = Convert.ToInt32(result);
-                        }
-                    }
-                    catch (SqlException ex)
-                    {
-
-                        throw new Exception("Database error during login: " + ex.Message);
-                    }
+                    playerId = (int)idParam.Value;
                 }
-            }
 
-            return loginStatus;
+                return status;
+            }
         }
 
-        public int RegisterPlayer(string username, string password)
+        public int RegisterPlayer(string username, string password, out int playerId)
         {
-            int regStatus = 0; // Default to failure (0)
+            playerId = 0;
 
             using (SqlConnection conn = new SqlConnection(connectionString))
+            using (SqlCommand cmd = new SqlCommand("dbo.sp_RegisterPlayer", conn))
             {
-                using (SqlCommand cmd = new SqlCommand("sp_RegisterPlayer", conn))
+                cmd.CommandType = CommandType.StoredProcedure;
+                cmd.Parameters.Add("@PlayerName", SqlDbType.VarChar, 50).Value = username;
+                cmd.Parameters.Add("@Password", SqlDbType.VarChar, 100).Value = password;
+
+                SqlParameter idParam = cmd.Parameters.Add("@PlayerID", SqlDbType.Int);
+                idParam.Direction = ParameterDirection.Output;
+
+                conn.Open();
+                int status = Convert.ToInt32(cmd.ExecuteScalar());
+
+                if (status == 1 && idParam.Value != DBNull.Value)
                 {
-                    cmd.CommandType = CommandType.StoredProcedure;
-                    cmd.Parameters.AddWithValue("@PlayerName", username);
-                    cmd.Parameters.AddWithValue("@PasswordHash", password);
-
-                    try
-                    {
-                        conn.Open();
-                        object result = cmd.ExecuteScalar();
-
-                        if (result != null)
-                        {
-                            regStatus = Convert.ToInt32(result);
-                        }
-                    }
-                    catch (SqlException ex)
-                    {
-                        throw new Exception("Database error during registration: " + ex.Message);
-                    }
+                    playerId = (int)idParam.Value;
                 }
-            }
 
-            return regStatus;
+                return status;
+            }
         }
 
         /// <summary>
@@ -86,7 +74,7 @@ namespace GridHeistApplication.DataAccess
 
             using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlCommand cmd = new SqlCommand("SELECT IsAdmin FROM Players WHERE LOWER(PlayerName) = LOWER(@PlayerName)", conn)) conn))
+                using (SqlCommand cmd = new SqlCommand("SELECT IsAdmin FROM Players WHERE LOWER(PlayerName) = LOWER(@PlayerName)", conn))
                 {
                     cmd.Parameters.AddWithValue("@PlayerName", username);
 
@@ -109,6 +97,7 @@ namespace GridHeistApplication.DataAccess
 
             return isAdmin;
         }
-
     }
 }
+
+

@@ -8,10 +8,9 @@ using System.Threading.Tasks;
 
 namespace GridHeistApplication.DataAccess
 {
-    internal class GameDAO
+    public class GameDAO
     {
-
-        private readonly string connectionString = "Server=SIYARA\\MSSQLSERVER01;Database=GridHeistDB;Integrated Security=True;";
+        private readonly string connectionString = "Server=SIYARA\\MSSQLSERVER01;Database=GridHeistDB2;Integrated Security=True;";
 
         //generate game Board
         public int GenerateGameBoard(int hostPlayerId)
@@ -163,15 +162,21 @@ namespace GridHeistApplication.DataAccess
         //  Move Item / NPC
         public void MoveNPC(int gameId)
         {
-            using (System.Data.SqlClient.SqlConnection conn = new System.Data.SqlClient.SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (System.Data.SqlClient.SqlCommand cmd = new System.Data.SqlClient.SqlCommand("sp_MoveNPC", conn))
+                using (SqlCommand cmd = new SqlCommand("sp_MoveNPC", conn))
                 {
                     cmd.CommandType = CommandType.StoredProcedure;
                     cmd.Parameters.AddWithValue("@GameID", gameId);
-
-                    conn.Open();
-                    cmd.ExecuteNonQuery(); // We removed the silent catch here!
+                    try
+                    {
+                        conn.Open();
+                        cmd.ExecuteNonQuery();
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Database error moving NPC: " + ex.Message);
+                    }
                 }
             }
         }
@@ -179,20 +184,27 @@ namespace GridHeistApplication.DataAccess
         // Add this method for the Game Form
         public string GetGameStatus(int gameId)
         {
-            using (SqlConnection connection = new SqlConnection(connectionString))
+            using (SqlConnection conn = new SqlConnection(connectionString))
             {
-                using (SqlCommand command = new SqlCommand("sp_GetGameStatus", connection))
+                using (SqlCommand cmd = new SqlCommand("sp_GetGameStatus", conn))
                 {
-                    command.CommandType = CommandType.StoredProcedure;
-                    command.Parameters.AddWithValue("@GameID", gameId);
-                    connection.Open();
-                    // ExecuteScalar is perfect for getting a single value back.
-                    object result = command.ExecuteScalar();
-                    return result.ToString();
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@GameID", gameId);
+                    try
+                    {
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != null && result != DBNull.Value)
+                            return result.ToString();
+                        return "Unknown";
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Database error getting game status: " + ex.Message);
+                    }
                 }
             }
         }
-
 
         public bool CheckPlayerWinner(int gameId, int playerId)
         {
@@ -221,7 +233,9 @@ namespace GridHeistApplication.DataAccess
             return isWinner;
         }
 
-
+        /// <summary>
+        /// Get final game results with all players' scores and winner status
+        /// </summary>
         public DataTable GetGameResults(int gameId)
         {
             DataTable dt = new DataTable();
@@ -247,7 +261,9 @@ namespace GridHeistApplication.DataAccess
             return dt;
         }
 
-
+        /// <summary>
+        /// Get winner info (player with IsWinner = 1 for this game)
+        /// </summary>
         public DataTable GetGameWinner(int gameId)
         {
             DataTable dt = new DataTable();
@@ -272,5 +288,137 @@ namespace GridHeistApplication.DataAccess
             }
             return dt;
         }
+
+
+        // Get list of active games a player can join
+        public DataTable GetAvailableGames()
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_GetAvailableGames", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    try
+                    {
+                        conn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        da.Fill(dt);
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Database error fetching available games: " + ex.Message);
+                    }
+                }
+            }
+            return dt;
+        }
+
+        // Join an existing game
+        public int JoinGame(int gameId, int playerId)
+        {
+            int status = 0;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_JoinGame", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@GameID", gameId);
+                    cmd.Parameters.AddWithValue("@PlayerID", playerId);
+                    try
+                    {
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != null) status = Convert.ToInt32(result);
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Database error joining game: " + ex.Message);
+                    }
+                }
+            }
+            return status;
+        }
+
+        // Get other players in the same game
+        public DataTable GetOtherPlayers(int gameId, int playerId)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_GetOtherPlayers", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@GameID", gameId);
+                    cmd.Parameters.AddWithValue("@PlayerID", playerId);
+                    try
+                    {
+                        conn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        da.Fill(dt);
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Database error fetching other players: " + ex.Message);
+                    }
+                }
+            }
+            return dt;
+        }
+
+        // Send a chat message
+        public int SendChatMessage(int gameId, int playerId, string messageText)
+        {
+            int status = 0;
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_SendChatMessage", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@GameID", gameId);
+                    cmd.Parameters.AddWithValue("@PlayerID", playerId);
+                    cmd.Parameters.AddWithValue("@MessageText", messageText);
+                    try
+                    {
+                        conn.Open();
+                        object result = cmd.ExecuteScalar();
+                        if (result != null) status = Convert.ToInt32(result);
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Database error sending chat: " + ex.Message);
+                    }
+                }
+            }
+            return status;
+        }
+
+        // Get chat messages for a game
+        public DataTable GetChatMessages(int gameId)
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand("sp_GetChatMessages", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@GameID", gameId);
+                    try
+                    {
+                        conn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        da.Fill(dt);
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Database error fetching chat: " + ex.Message);
+                    }
+                }
+            }
+            return dt;
+        }
+
     }
 }
+
+

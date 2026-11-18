@@ -48,6 +48,8 @@
   <ItemGroup>
     <Compile Include="DataAccess\AdminDAO.cs" />
     <Compile Include="DataAccess\DatabaseAccessor.cs" />
+    <Compile Include="DataAccess\GameDAO.cs" />
+    <Compile Include="DataAccess\LoginDAO.cs" />
     <Compile Include="frmAdmin.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -100,10 +102,8 @@
   <ItemGroup>
     <None Include="App.config" />
   </ItemGroup>
-  <ItemGroup />
   <ItemGroup>
-    <Content Include="SQL Scripts\InitializeDatabase.sql" />
-    <Content Include="SQL Scripts\StoredProcedures.sql" />
+    <Folder Include="SQL Scripts\" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

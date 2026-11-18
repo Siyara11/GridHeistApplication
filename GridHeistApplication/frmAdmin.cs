@@ -28,6 +28,7 @@ namespace GridHeistApplication
                 // Fetch the table of players
                 DataTable dtPlayers = adminDAO.GetAdminPlayerList();
 
+                // Bind the data to the list box
                 lstPlayers.DataSource = dtPlayers;
                 lstPlayers.DisplayMember = "PlayerName";
                 lstPlayers.ValueMember = "PlayerID";
@@ -48,6 +49,7 @@ namespace GridHeistApplication
 
         private void lstPlayers_SelectedIndexChanged(object sender, EventArgs e)
         {
+            // Ensure an item is actually selected and is a DataRowView
             if (lstPlayers.SelectedIndex >= 0 && lstPlayers.SelectedItem is DataRowView)
             {
                 DataRowView selectedRow = (DataRowView)lstPlayers.SelectedItem;
@@ -59,7 +61,6 @@ namespace GridHeistApplication
             }
         }
 
-        //Admin add new player to the game 
         private void btnAddNewPlayer_Click(object sender, EventArgs e)
         {
             if (!string.IsNullOrEmpty(txtPlayerID.Text))
@@ -73,6 +74,7 @@ namespace GridHeistApplication
 
                 MessageBox.Show("Form cleared and ready. Type the new username and click 'Add New Player' again to save.",
                                 "Ready for New Player", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
 
                 txtUsername.Focus();
 
@@ -110,6 +112,7 @@ namespace GridHeistApplication
                 int playerId = Convert.ToInt32(txtPlayerID.Text);
                 string newUsername = txtUsername.Text.Trim();
 
+                // If the checkbox is UNCHECKED, it means the admin wants to unlock the account
                 bool unlockAccount = !chkAccountLocked.Checked;
 
                 AdminDAO adminDAO = new AdminDAO();
@@ -164,29 +167,44 @@ namespace GridHeistApplication
             }
         }
 
- 
-
-        //Admin Kill the runnuig game
         private void btnKillRunningGame_Click(object sender, EventArgs e)
         {
-            DialogResult result = MessageBox.Show("Are you sure you want to kill the active test game? This will stop GameID 1.", "Kill Running Game", MessageBoxButtons.YesNo, MessageBoxIcon.Warning);
-
-            if (result == DialogResult.Yes)
+            try
             {
                 AdminDAO adminDAO = new AdminDAO();
+                DataTable activeGames = adminDAO.GetActiveGames();
 
-                // Hardcoded to kill Game 1 for the prototype test scenario
-                int status = adminDAO.KillRunningGame(1);
-
-                if (status == 1)
+                if (activeGames.Rows.Count == 0)
                 {
-                    MessageBox.Show("Running game has been terminated and players marked as finished.", "Game Terminated", MessageBoxButtons.OK, MessageBoxIcon.Information);
-                }
-                else
-                {
-                    MessageBox.Show("Could not find an active game to terminate.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    MessageBox.Show("No active games found.", "Info", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
                 }
 
+                // Build a list of active games to show the admin
+                string gameList = "Active Games:\n\n";
+                foreach (DataRow row in activeGames.Rows)
+                {
+                    gameList += $"Game #{row["GameID"]} - Status: {row["GameStatus"]}\n";
+                }
+                gameList += "\nThe most recent game will be terminated.";
+
+                DialogResult result = MessageBox.Show(gameList, "Kill Running Game", MessageBoxButtons.OKCancel, MessageBoxIcon.Warning);
+
+                if (result == DialogResult.OK)
+                {
+                    // Kill the most recent active game
+                    int latestGameId = Convert.ToInt32(activeGames.Rows[0]["GameID"]);
+                    int status = adminDAO.KillRunningGame(latestGameId);
+
+                    if (status == 1)
+                        MessageBox.Show($"Game #{latestGameId} terminated successfully.", "Game Terminated", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    else
+                        MessageBox.Show("Failed to terminate game.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error: " + ex.Message, "Database Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
 
@@ -196,3 +214,5 @@ namespace GridHeistApplication
         }
     }
 }
+
+

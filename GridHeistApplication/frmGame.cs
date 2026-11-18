@@ -16,6 +16,7 @@ namespace GridHeistApplication
         private int currentGameId = 0;
         private int currentHostPlayerId;
         private string currentHostPlayerName;
+
         private Timer npcTimer;
 
         // Update the constructor to accept the player's details
@@ -41,7 +42,7 @@ namespace GridHeistApplication
 
         private void DrawGameBoard()
         {
-             GameDAO gameDAO = new GameDAO();
+            GameDAO gameDAO = new GameDAO();
             DataTable dtBoard = gameDAO.GetGameBoard(currentGameId);
 
             // Fetch where the player is currently standing
@@ -70,7 +71,7 @@ namespace GridHeistApplication
                 btnTile.Top = startY + (r * (buttonSize + padding));
                 btnTile.Tag = tileId;
 
-                // Attach the click event to make the tile interactive
+                // Attach the click event to make the tile interactive!
                 btnTile.Click += new EventHandler(Tile_Click);
 
                 if (tileType == "Firewall") btnTile.BackColor = System.Drawing.Color.DarkGray;
@@ -99,6 +100,32 @@ namespace GridHeistApplication
 
                 pnlGameBoard.Controls.Add(btnTile);
             }
+
+            // Update opponent info
+            try
+            {
+                DataTable otherPlayers = gameDAO.GetOtherPlayers(currentGameId, currentHostPlayerId);
+                if (otherPlayers.Rows.Count > 0)
+                {
+
+                    string opponentName = otherPlayers.Rows[0][1].ToString();
+                    lblOpponentNameValue.Text = opponentName;
+
+                    if (otherPlayers.Columns.Count > 2)
+                    {
+                        lblOpponentGemsValue.Text = otherPlayers.Rows[0][2].ToString() + " / 30";
+                    }
+                }
+                else
+                {
+                    lblOpponentNameValue.Text = "Waiting...";
+                    lblOpponentGemsValue.Text = "0 / 3";
+                }
+            }
+            catch (Exception ex)
+            {
+                txtActionLog.AppendText("Opponent error: " + ex.Message + "\r\n");
+            }
         }
 
 
@@ -107,34 +134,39 @@ namespace GridHeistApplication
         {
             try
             {
-                 GameDAO gameDAO = new GameDAO();
-
+                GameDAO gameDAO = new GameDAO();
                 txtActionLog.AppendText($"Welcome {currentHostPlayerName}!\r\n");
-                txtActionLog.AppendText("Initializing game board in database...\r\n");
 
-                //Generate the board in the database
-                currentGameId = gameDAO.GenerateGameBoard(currentHostPlayerId);
+                // Check if there is an available game to join first
+                DataTable availableGames = gameDAO.GetAvailableGames();
 
-                if (currentGameId > 0)
+                if (availableGames.Rows.Count > 0)
                 {
-                    txtActionLog.AppendText($"Success! Game Session #{currentGameId} created with 64 tiles.\r\n");
+                    // Join the first available game
+                    int existingGameId = Convert.ToInt32(availableGames.Rows[0]["GameID"]);
+                    int joinResult = gameDAO.JoinGame(existingGameId, currentHostPlayerId);
 
-                    // Place the initial items in the database
-                    bool itemsPlaced = gameDAO.PlaceInitialItems(currentGameId);
-                    if (itemsPlaced)
+                    if (joinResult == 1)
                     {
-                        txtActionLog.AppendText("Initial items placed successfully.\r\n");
+                        currentGameId = existingGameId;
+                        txtActionLog.AppendText($"Joined existing Game Session #{currentGameId}!\r\n");
+                    }
+                    else
+                    {
+                        // Join failed, create new game
+                        CreateNewGame(gameDAO);
                     }
                 }
                 else
                 {
-                    MessageBox.Show("Failed to generate the game board.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    // No available games, create a new one
+                    CreateNewGame(gameDAO);
                 }
 
                 // Draw the visual grid on the screen based on the database
                 DrawGameBoard();
                 npcTimer = new Timer();
-                npcTimer.Interval = 3000; // 3000 milliseconds = 3 seconds
+                npcTimer.Interval = 3000;
                 npcTimer.Tick += new EventHandler(NpcTimer_Tick);
                 npcTimer.Start();
             }
@@ -144,6 +176,28 @@ namespace GridHeistApplication
             }
         }
 
+        private void CreateNewGame(GameDAO gameDAO)
+        {
+            txtActionLog.AppendText("Initializing game board in database...\r\n");
+            currentGameId = gameDAO.GenerateGameBoard(currentHostPlayerId);
+
+            if (currentGameId > 0)
+            {
+                txtActionLog.AppendText($"Success! Game Session #{currentGameId} created with 64 tiles.\r\n");
+
+                bool itemsPlaced = gameDAO.PlaceInitialItems(currentGameId);
+                if (itemsPlaced)
+                {
+                    txtActionLog.AppendText("Initial items placed successfully.\r\n");
+                }
+            }
+            else
+            {
+                MessageBox.Show("Failed to generate the game board.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+
         //Click Tile
         private void Tile_Click(object sender, EventArgs e)
         {
@@ -152,10 +206,27 @@ namespace GridHeistApplication
             {
                 int targetTileId = Convert.ToInt32(clickedButton.Tag);
 
-                 GameDAO gameDAO = new GameDAO();
+                GameDAO gameDAO = new GameDAO();
                 int moveStatus = gameDAO.MovePlayer(currentGameId, currentHostPlayerId, targetTileId);
 
-                if (moveStatus == 1)
+                if (moveStatus == 3) // Game Won!
+                {
+                    txtActionLog.AppendText(">>> YOU ESCAPED! GAME WON! +50 Points! <<<\r\n");
+                    DrawGameBoard();
+                    int currentScore = gameDAO.GetPlayerScore(currentGameId, currentHostPlayerId);
+                    lblYourGemsValue.Text = currentScore.ToString() + " / 30";
+
+                    // Stop the game timer and show victory
+                    npcTimer.Stop();
+                    MessageBox.Show("Congratulations! You successfully escaped the Blackout Protocol and collected all fragments!",
+                                    "VICTORY", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    ShowVictoryScreen(gameDAO, currentScore);
+                }
+                else if (moveStatus == -2) // Not enough fragments to exit
+                {
+                    txtActionLog.AppendText("Access Denied: You need at least 3 fragments to use the Exit Portal.\r\n");
+                }
+                else if (moveStatus == 1)
                 {
                     txtActionLog.AppendText("Moved successfully!\r\n");
 
@@ -188,11 +259,53 @@ namespace GridHeistApplication
             }
         }
 
+
+
+        /// <summary>
+        /// Display victory screen with final game results
+        /// </summary>
+        private void ShowVictoryScreen(GameDAO gameDAO, int finalScore)
+        {
+            try
+            {
+                DataTable results = gameDAO.GetGameResults(currentGameId);
+
+                string resultMessage = "=== GAME RESULTS ===\r\n\r\n";
+                resultMessage += $"Your Final Score: {finalScore} points\r\n\r\n";
+                resultMessage += "All Players:\r\n";
+
+                if (results.Rows.Count > 0)
+                {
+                    int rank = 1;
+                    foreach (DataRow row in results.Rows)
+                    {
+                        int score = Convert.ToInt32(row["Score"]);
+                        bool isWinner = Convert.ToBoolean(row["IsWinner"]);
+                        string status = row["PlayerStatus"].ToString();
+                        string winnerTag = isWinner ? " [WINNER]" : "";
+
+                        resultMessage += $"{rank}. Score: {score} | Status: {status}{winnerTag}\r\n";
+                        rank++;
+                    }
+                }
+
+                MessageBox.Show(resultMessage, "Game Over", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                // Close the game form and return to login/lobby
+                this.Close();
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Error retrieving game results: " + ex.Message, "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        //NPC
         private void NpcTimer_Tick(object sender, EventArgs e)
         {
             try
             {
-                 GameDAO gameDAO = new GameDAO();
+                GameDAO gameDAO = new GameDAO();
                 gameDAO.MoveNPC(currentGameId);
 
                 // Redraw the board to show the movement
@@ -200,7 +313,7 @@ namespace GridHeistApplication
             }
             catch (Exception ex)
             {
-
+                // If the database blocks the move, print the exact error to the screen!
                 txtActionLog.AppendText("NPC Move Error: " + ex.Message + "\r\n");
 
                 // Scroll to the bottom of the log
@@ -211,18 +324,29 @@ namespace GridHeistApplication
 
 
 
+
+
         private void btnQuitGame_Click(object sender, EventArgs e)
         {
             DialogResult result = MessageBox.Show("Are you sure you want to quit the game?", "Quit Game", MessageBoxButtons.YesNo, MessageBoxIcon.Question);
             if (result == DialogResult.Yes)
             {
-                // In the future, this will call a DAO method to mark the player as "Left"
-                this.Close();
                 npcTimer.Stop();
+                this.Close();
 
-                // Show the login screen again when closing the game
-                Application.OpenForms["frmLogin"].Show();
+                // Show the login screen again safely
+                Form loginForm = Application.OpenForms["frmLogin"];
+                if (loginForm != null)
+                {
+                    loginForm.Show();
+                }
+                else
+                {
+                    Application.Run(new frmLogin());
+                }
             }
         }
     }
 }
+
+

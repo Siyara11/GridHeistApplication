@@ -8,13 +8,10 @@ using System.Threading.Tasks;
 
 namespace GridHeistApplication.DataAccess
 {
-    internal class AdminDAO
+    public class AdminDAO
     {
 
-        private readonly string connectionString = "Server=SIYARA\\MSSQLSERVER01;Database=GridHeistDB;Integrated Security=True;";
-
-
-
+        private readonly string connectionString = "Server=SIYARA\\MSSQLSERVER01;Database=GridHeistDB2;Integrated Security=True;";
 
         //Admin Get ALl Payers
         public DataTable GetAdminPlayerList()
@@ -135,6 +132,28 @@ namespace GridHeistApplication.DataAccess
         }
 
 
-
+        // Get all active games for admin to see
+        public DataTable GetActiveGames()
+        {
+            DataTable dt = new DataTable();
+            using (SqlConnection conn = new SqlConnection(connectionString))
+            {
+                using (SqlCommand cmd = new SqlCommand(
+                   "SELECT GameID, GameStatus FROM Games WHERE GameStatus = 'Active' ORDER BY GameID DESC", conn))
+                {
+                    try
+                    {
+                        conn.Open();
+                        SqlDataAdapter da = new SqlDataAdapter(cmd);
+                        da.Fill(dt);
+                    }
+                    catch (SqlException ex)
+                    {
+                        throw new Exception("Database error fetching games: " + ex.Message);
+                    }
+                }
+            }
+            return dt;
+        }
     }
 }
